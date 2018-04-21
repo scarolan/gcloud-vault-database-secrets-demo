@@ -78,6 +78,8 @@ For this bit you'll need a mysql client installed on your laptop.  The setup scr
 ```
 # Grab some creds if you haven't already
 vault read database/creds/my-role
+# Or if you want to get fancy, use the API.  (jq will make the output pretty)
+curl -H "X-Vault-Token: password" -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq
 
 # Use the creds to log on
 mysql -uv-token-my-role-vz90z2r03tpx4tq5 -pA1a-z2s3r4wzz568y2uw -h 127.0.0.1

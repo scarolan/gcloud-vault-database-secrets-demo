@@ -116,6 +116,11 @@ Now you can fetch credentials with it:
 curl -H "X-Vault-Token: 65e8862f-60da-5aee-1d63-7fc360c39132" -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq .
 ```
 
+#### Show renewal of a token using renew-self
+```
+curl -H "X-Vault-Token: 48422d79-1409-b31b-35d5-17e7b675cf22" -X POST http://127.0.0.1:8200/v1/auth/token/renew-self | jq
+```
+
 #### Enable audit logs
 If you want to show off Vault audit logs just run this command:
 

@@ -75,7 +75,8 @@ use employees;
 desc employees;
 select emp_no, first_name, last_name, gender from employees limit 10;
 
-# Log off the machine, invalidate token.  Attempt to log on again:
+# Log off the machine, revoke the lease.  Attempt to log on again:
+vault lease revoke database/creds/my-role/4f876169-ae19-c69c-34ca-a4ee9e6798d6
 mysql -uv-token-my-role-vz90z2r03tpx4tq5 -pA1a-z2s3r4wzz568y2uw -h 127.0.0.1
 
 ERROR 1045 (28000): Access denied for user 'v-token-my-role-vz90z2r03tpx4tq5'@'localhost' (using password: YES)

@@ -121,6 +121,12 @@ curl -H "X-Vault-Token: 65e8862f-60da-5aee-1d63-7fc360c39132" -X GET http://127.
 curl -H "X-Vault-Token: 48422d79-1409-b31b-35d5-17e7b675cf22" -X POST http://127.0.0.1:8200/v1/auth/token/renew-self | jq
 ```
 
+#### Show a renewal of a lease associated with credentials
+The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.
+```
+curl -H "X-Vault-Token: 4dcc36f4-f7bf-b19a-df22-f2ad485dd416" -X POST --data '{ "lease_id": "database/creds/my-role/b930c541-6ede-ac4a-2715-c39d9aabcdac", "increment": 3600}' http://127.0.0.1:8200/v1/sys/leases/renew | jq .
+```
+
 #### Enable audit logs
 If you want to show off Vault audit logs just run this command:
 

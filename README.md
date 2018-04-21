@@ -49,7 +49,7 @@ vault lease revoke database/creds/my-role/bb52414e-fd9c-dbf5-61ad-d9718c8b2b81
 You are now ready to present your demo. On the MySQL server you can show a list of users like this:
 
 ```
-mysql -uroot -pbananas
+sudo mysql -uroot -pbananas
 ```
 
 Once inside the MySQL command prompt:

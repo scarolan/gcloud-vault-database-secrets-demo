@@ -1,6 +1,6 @@
 # Simple database secrets engine demo
 
-This tutorial shows you how to build a simple MySQL Vault database secrets engine demo using GCP and your local machine.  You will end up with three terminal sessions open.  One on the MySQL server, one for running Vault commands, and a third for showing Vault logs and output.
+This tutorial shows you how to build a simple MySQL Vault database secrets engine demo using GCP and your local machine.  You will end up with three terminal sessions open. One on the MySQL server, one for running Vault commands, and a third for running the Vault server.  This basically mimics an application > Vault > database architecture.
 
 ## Prerequisites:
 * Vault installed on your local machine
@@ -27,7 +27,7 @@ The MySQL server is now ready, and port 3306 is forwarded back to your machine. 
 vault server -dev -dev-root-token-id=password
 ```
 
-Let that command run, it will show Vault's output logs. Open another terminal and run these:
+Leave Vault running in this terminal.  Open another terminal and run these:
 
 ```
 export VAULT_ADDR=http://127.0.0.1:8200
@@ -57,6 +57,13 @@ select user,password from mysql.user;
 ```
 
 Now you can demonstrate creation of a user, then revoking the lease and showing the user disappear from the MySQL server.
+
+#### Optional - Enable audit logs
+If you want to show off Vault audit logs just run this command:
+
+```
+vault audit enable file file_path=/tmp/my-file.txt
+```
 
 ### Cleanup
 ```

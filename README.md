@@ -72,7 +72,8 @@ select user,password from mysql.user;
 
 Now you can demonstrate creation of a user, then revoking the lease and showing the user disappear from the MySQL server.
 
-#### Optional - Log on using the dynamic credentials
+### Optional Extras
+#### Log on using the dynamic credentials
 For this bit you'll need a mysql client installed on your laptop.  The setup script loads a sample database called employees that you can browse.
 
 ```
@@ -96,7 +97,7 @@ mysql -uv-token-my-role-vz90z2r03tpx4tq5 -pA1a-z2s3r4wzz568y2uw -h 127.0.0.1
 ERROR 1045 (28000): Access denied for user 'v-token-my-role-vz90z2r03tpx4tq5'@'localhost' (using password: YES)
 ```
 
-#### Optional - Use a periodic token to fetch credentials
+#### Use a periodic token to fetch credentials
 Create a policy like this:
 ```
 # Allow read only access to employees database
@@ -115,7 +116,7 @@ Now you can fetch credentials with it:
 curl -H "X-Vault-Token: 65e8862f-60da-5aee-1d63-7fc360c39132" -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq .
 ```
 
-#### Optional - Enable audit logs
+#### Enable audit logs
 If you want to show off Vault audit logs just run this command:
 
 ```

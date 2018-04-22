@@ -12,8 +12,15 @@ First run these commands to stand up an Ubuntu 16.04 instance and get connected 
 ### Step 1: Configure a MySQL instance
 
 ```
-gcloud compute instances create mysqlvaultdemo --zone us-central1-a --image-family=ubuntu-1604-lts --image-project=ubuntu-os-cloud
-gcloud compute scp --zone us-central1-a scripts/install_mysql_ubuntu.sh mysqlvaultdemo:~/
+gcloud compute instances create mysqlvaultdemo \
+  --zone us-central1-a \
+  --image-family=ubuntu-1604-lts \
+  --image-project=ubuntu-os-cloud
+
+gcloud compute scp --zone us-central1-a \
+  scripts/install_mysql_ubuntu.sh \
+  mysqlvaultdemo:~/
+
 gcloud compute ssh --zone us-central1-a mysqlvaultdemo -- -L 3306:localhost:3306
 ```
 
@@ -44,9 +51,14 @@ export VAULT_ADDR=http://127.0.0.1:8200
 
 vault secrets enable database
 
-vault write database/config/my-mysql-database plugin_name=mysql-database-plugin connection_url="{{username}}:{{password}}@tcp(localhost:3306)/" allowed_roles="my-role" username="vaultadmin" password="vaultpw"
+vault write database/config/my-mysql-database \
+  plugin_name=mysql-database-plugin \
+  connection_url="{{username}}:{{password}}@tcp(localhost:3306)/" \
+  allowed_roles="my-role" username="vaultadmin" password="vaultpw"
 
-vault write database/roles/my-role db_name=my-mysql-database creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" default_ttl="1h" max_ttl="24h"
+vault write database/roles/my-role \
+  db_name=my-mysql-database \
+  creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" default_ttl="1h" max_ttl="24h"
 ```
 
 Your Vault server is now ready.  Test it with the following commands (replace with your lease):
@@ -61,13 +73,7 @@ vault lease revoke database/creds/my-role/bb52414e-fd9c-dbf5-61ad-d9718c8b2b81
 You are now ready to present your demo. On the MySQL server you can show a list of users like this:
 
 ```
-sudo mysql -uroot -pbananas
-```
-
-Once inside the MySQL command prompt:
-
-```
-select user,password from mysql.user;
+sudo mysql -uroot -pbananas -e 'select user,password from mysql.user;'
 ```
 
 Now you can demonstrate creation of a user, then revoking the lease and showing the user disappear from the MySQL server.
@@ -80,10 +86,15 @@ For this bit you'll need a mysql client installed on your laptop.  The setup scr
 # Grab some creds if you haven't already
 vault read database/creds/my-role
 # Or if you want to get fancy, use the API.  (jq will make the output pretty)
-curl -H "X-Vault-Token: password" -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq
+curl -H "X-Vault-Token: password" \
+     -X GET \
+     http://127.0.0.1:8200/v1/database/creds/my-role | jq
 
 # Use the creds to log on
 mysql -uv-token-my-role-vz90z2r03tpx4tq5 -pA1a-z2s3r4wzz568y2uw -h 127.0.0.1
+
+# Open a SQL prompt
+sudo mysql -uroot -pbananas
 
 # In the SQL prompt run these commands:
 use employees;
@@ -113,18 +124,23 @@ vault token create -period 1h -policy db_read_only
 
 Now you can fetch credentials with it:
 ```
-curl -H "X-Vault-Token: 65e8862f-60da-5aee-1d63-7fc360c39132" -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq .
+curl -H "X-Vault-Token: 65e8862f-60da-5aee-1d63-7fc360c39132" \
+     -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq .
 ```
 
 #### Show renewal of a token using renew-self
 ```
-curl -H "X-Vault-Token: 48422d79-1409-b31b-35d5-17e7b675cf22" -X POST http://127.0.0.1:8200/v1/auth/token/renew-self | jq
+curl -H "X-Vault-Token: 48422d79-1409-b31b-35d5-17e7b675cf22" \
+     -X POST http://127.0.0.1:8200/v1/auth/token/renew-self | jq
 ```
 
 #### Show a renewal of a lease associated with credentials
 The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.
 ```
-curl -H "X-Vault-Token: 4dcc36f4-f7bf-b19a-df22-f2ad485dd416" -X POST --data '{ "lease_id": "database/creds/my-role/b930c541-6ede-ac4a-2715-c39d9aabcdac", "increment": 3600}' http://127.0.0.1:8200/v1/sys/leases/renew | jq .
+curl -H "X-Vault-Token: 4dcc36f4-f7bf-b19a-df22-f2ad485dd416" \
+     -X POST \
+     --data '{ "lease_id": "database/creds/my-role/b930c541-6ede-ac4a-2715-c39d9aabcdac", "increment": 3600}' \
+     http://127.0.0.1:8200/v1/sys/leases/renew | jq .
 ```
 
 #### Enable audit logs

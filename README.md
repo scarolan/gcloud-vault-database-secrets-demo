@@ -83,9 +83,29 @@ Now you can demonstrate creation of a user, then revoking the lease and showing 
 #### Show off the Vault UI
 Log onto http://localhost:8200 in a web browser. Use `password` as the token to log on (you set this above in Step 2).
 
+#### Create a policy in the UI
+Create a policy called `db_read_only` with the following contents:
+```
+# Allow read only access to employees database
+path "database/creds/my-role" {
+    capabilities = ["read"]
+}
+```
 
-#### Log on using the dynamic credentials
-For this bit you'll need a mysql client installed on your laptop.  The setup script loads a sample database called employees that you can browse.
+#### Use a periodic token to fetch credentials
+Generate a token for your 'app' server:
+```
+vault token create -period 1h -policy db_read_only
+```
+
+Now you can fetch credentials with it:
+```
+curl -H "X-Vault-Token: 65e8862f-60da-5aee-1d63-7fc360c39132" \
+     -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq .
+```
+
+#### Log on to MySQL using the dynamic credentials
+For this bit you'll need a mysql client installed on your laptop.  The setup script loads a sample database called employees that you can browse. You will be mimicing the behavior of an application interacting with Vault and a MySQL database.
 
 ```
 # Grab some creds if you haven't already
@@ -111,26 +131,6 @@ vault lease revoke database/creds/my-role/4f876169-ae19-c69c-34ca-a4ee9e6798d6
 mysql -uv-token-my-role-vz90z2r03tpx4tq5 -pA1a-z2s3r4wzz568y2uw -h 127.0.0.1
 
 ERROR 1045 (28000): Access denied for user 'v-token-my-role-vz90z2r03tpx4tq5'@'localhost' (using password: YES)
-```
-
-#### Use a periodic token to fetch credentials
-Create a policy called `db_read_only` with the following contents:
-```
-# Allow read only access to employees database
-path "database/creds/my-role" {
-    capabilities = ["read"]
-}
-```
-
-Generate a token for your 'app' server:
-```
-vault token create -period 1h -policy db_read_only
-```
-
-Now you can fetch credentials with it:
-```
-curl -H "X-Vault-Token: 65e8862f-60da-5aee-1d63-7fc360c39132" \
-     -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq .
 ```
 
 #### Show renewal of a token using renew-self

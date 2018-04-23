@@ -123,8 +123,12 @@ exit
 ```
 
 ### Step 5: Revoke the lease
+Use the lease id that you generated in step 3. Scroll back in your terminal to find it.
 ```
-vault lease revoke database/creds/my-role/$MY_LEASE
+vault lease revoke database/creds/my-role/f9cf14cd-806c-50c4-8738-0232129bdd0b
+
+# You can also revoke *all* the leases with this prefix:
+vault lease revoke -prefix database/creds/my-role
 ```
 
 ### Step 6: Attempt to log on again
@@ -161,6 +165,15 @@ curl -H "X-Vault-Token: $APP_TOKEN" \
      --data '{ "lease_id": "database/creds/my-role/$MY_LEASE", "increment": 3600}' \
      http://127.0.0.1:8200/v1/sys/leases/renew | jq .
 ```
+
+#### Revoke all leases and invalidate all active credentials
+```
+# Run this five or six times to generate credentials
+vault read database/creds/my-role
+# Show all the users on the database server
+sudo mysql -uroot -pbananas -e 'select user,password from mysql.user;'
+# Revoke everything under my-role
+vault lease revoke -prefix database/creds/my-role
 
 #### Enable audit logs
 If you want to show off Vault audit logs just run this command:

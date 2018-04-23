@@ -42,7 +42,7 @@ Run the following commands to get Vault setup on your laptop:
 vault server -dev -dev-root-token-id=password
 ```
 
-Leave Vault running in this terminal.  
+Leave Vault running in this terminal. You can point out API actions as they are logged, such as revoked leases, etc.
 
 ### Step 3: Configure the Vault database backend for MySQL
 

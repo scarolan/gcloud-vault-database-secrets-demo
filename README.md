@@ -16,6 +16,8 @@ gcloud compute instances create mysqlvaultdemo \
   --zone us-central1-a \
   --image-family=ubuntu-1604-lts \
   --image-project=ubuntu-os-cloud
+  
+# You may have to wait a few seconds before running the next command. GCP is fast, but not *that* fast.
 
 gcloud compute scp --zone us-central1-a \
   scripts/install_mysql_ubuntu.sh \

@@ -1,6 +1,6 @@
 # Simple database secrets engine demo
 
-This tutorial shows you how to build a simple MySQL Vault database secrets engine demo using GCP and your local machine.  You will end up with three terminal sessions open. One on the MySQL server, one for running Vault commands, and a third for running the Vault server.  This basically mimics an application > Vault > database architecture.
+This tutorial shows you how to build a simple MySQL Vault database secrets engine demo using GCP and your local machine. You will end up with three terminal sessions open. One on the MySQL server, one for running Vault commands, and a third for running the Vault server. This basically mimics an application > Vault > database architecture. 
 
 ## Prerequisites:
 * Vault installed on your local machine: https://www.vaultproject.io/downloads.html
@@ -17,7 +17,7 @@ gcloud compute instances create mysqlvaultdemo \
   --zone us-central1-a \
   --image-family=ubuntu-1604-lts \
   --image-project=ubuntu-os-cloud
-  
+ 
 # You may have to wait a few seconds before running the next command. GCP is fast, but not *that* fast.
 
 gcloud compute scp --zone us-central1-a \
@@ -45,7 +45,7 @@ vault server -dev -dev-root-token-id=password
 Leave Vault running in this terminal. You can point out API actions as they are logged, such as revoked leases, etc.
 
 ### Step 3: Configure the Vault database backend for MySQL
-Open a third terminal and run these commands.  You can copy and paste all of this code in one block:
+Open a third terminal and run these commands. You can copy and paste all of this code in one block:
 
 ```
 export VAULT_ADDR=http://127.0.0.1:8200
@@ -101,7 +101,7 @@ path "database/creds/my-role" {
 ```
 
 ### Step 3: Generate a periodic token for your 'app'
-Generate a token for your 'app' server.  Export it into a variable for ease of use. Replace with *your* token. 
+Generate a token for your 'app' server. Export it into a variable for ease of use. Replace with *your* token. 
 ```
 vault token create -period 1h -policy db_read_only
 export APP_TOKEN=47b422f4-ddeb-671a-756a-c161b66a84dd
@@ -114,7 +114,7 @@ curl -H "X-Vault-Token: $APP_TOKEN" \
 ```
 
 ### Step 4: Log on to MySQL using the dynamic credentials
-For this bit you'll need a MySQL client installed on your laptop.  The setup script loads a sample database called employees that you can browse. You will be mimicing the behavior of an application interacting with Vault and a MySQL database.
+For this bit you'll need a MySQL client installed on your laptop. The setup script loads a sample database called employees that you can browse. You will be mimicing the behavior of an application interacting with Vault and a MySQL database.
 
 ```
 # Use the creds to log on. This is your app connecting to the remote database.
@@ -160,7 +160,7 @@ vault list /sys/leases/lookup/database/creds/my-role/
 ```
 
 #### Show a renewal of a lease associated with credentials
-The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.  Replace with your own lease_id.
+The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl. Replace with your own lease_id.
 ```
 curl -H "X-Vault-Token: $APP_TOKEN" \
      -X POST \

@@ -3,8 +3,8 @@
 This tutorial shows you how to build a simple MySQL Vault database secrets engine demo using GCP and your local machine.  You will end up with three terminal sessions open. One on the MySQL server, one for running Vault commands, and a third for running the Vault server.  This basically mimics an application > Vault > database architecture.
 
 ## Prerequisites:
-* Vault installed on your local machine
-* GCP account configured with a project
+* Vault installed on your local machine: https://www.vaultproject.io/downloads.html
+* GCP account and SDK command line tools installed: https://cloud.google.com/sdk/
 
 ## Basic Demo - Dynamic Credentials
 This demo will stand up a GCP instance and install MySQL on it, configure a local Vault server, and enable the database secrets backend to manage dynamic credentials on the remote host.

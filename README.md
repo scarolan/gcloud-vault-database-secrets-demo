@@ -104,7 +104,22 @@ curl -H "X-Vault-Token: 65e8862f-60da-5aee-1d63-7fc360c39132" \
      -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq .
 ```
 
-### Step 4: Log on to MySQL using the dynamic credentials
+### Step 4: Show renewal of a token using renew-self
+```
+curl -H "X-Vault-Token: 48422d79-1409-b31b-35d5-17e7b675cf22" \
+     -X POST http://127.0.0.1:8200/v1/auth/token/renew-self | jq
+```
+
+### Step 5: Show a renewal of a lease associated with credentials
+The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.
+```
+curl -H "X-Vault-Token: 4dcc36f4-f7bf-b19a-df22-f2ad485dd416" \
+     -X POST \
+     --data '{ "lease_id": "database/creds/my-role/b930c541-6ede-ac4a-2715-c39d9aabcdac", "increment": 3600}' \
+     http://127.0.0.1:8200/v1/sys/leases/renew | jq .
+```
+
+### Step 6: Log on to MySQL using the dynamic credentials
 For this bit you'll need a MySQL client installed on your laptop.  The setup script loads a sample database called employees that you can browse. You will be mimicing the behavior of an application interacting with Vault and a MySQL database.
 
 ```
@@ -116,27 +131,16 @@ use employees;
 desc employees;
 select emp_no, first_name, last_name, gender from employees limit 10;
 
-# Log off the database server, then revoke the lease.  Attempt to log on again:
+# Log off the database server
 exit
+
+### Step 7: Revoke the lease
 vault lease revoke database/creds/my-role/4f876169-ae19-c69c-34ca-a4ee9e6798d6
+
+### Step 8: Attempt to log on again
 mysql -uv-token-my-role-vz90z2r03tpx4tq5 -pA1a-z2s3r4wzz568y2uw -h 127.0.0.1
 
 ERROR 1045 (28000): Access denied for user 'v-token-my-role-vz90z2r03tpx4tq5'@'localhost' (using password: YES)
-```
-
-### Step 5: Show renewal of a token using renew-self
-```
-curl -H "X-Vault-Token: 48422d79-1409-b31b-35d5-17e7b675cf22" \
-     -X POST http://127.0.0.1:8200/v1/auth/token/renew-self | jq
-```
-
-### Step 6: Show a renewal of a lease associated with credentials
-The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.
-```
-curl -H "X-Vault-Token: 4dcc36f4-f7bf-b19a-df22-f2ad485dd416" \
-     -X POST \
-     --data '{ "lease_id": "database/creds/my-role/b930c541-6ede-ac4a-2715-c39d9aabcdac", "increment": 3600}' \
-     http://127.0.0.1:8200/v1/sys/leases/renew | jq .
 ```
 
 ### Optional Stuff

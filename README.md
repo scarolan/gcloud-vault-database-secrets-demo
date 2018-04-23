@@ -7,7 +7,7 @@ This tutorial shows you how to build a simple MySQL Vault database secrets engin
 * GCP account configured with a project
 
 ## Basic Demo - Dynamic Credentials
-First run these commands to stand up an Ubuntu 16.04 instance and get connected to it.  The first command creates a new instance, the second command copies our setup script, and the third one forms an SSH tunnel to port 3306 on the remote machine (in addition to getting us connected).
+This demo will stand up a GCP instance and install MySQL on it, configure a local Vault server, and enable the database secrets backend to manage dynamic credentials on the remote host.
 
 ### Step 1: Configure a MySQL instance
 Open a terminal window and run the following commands:
@@ -62,22 +62,29 @@ vault write database/roles/my-role \
   creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" default_ttl="1h" max_ttl="24h"
 ```
 
-Your Vault server is now ready.  Test it with the following commands (replace with your lease):
-
-```
-vault read database/creds/my-role
-vault lease revoke database/creds/my-role/bb52414e-fd9c-dbf5-61ad-d9718c8b2b81
-```
+Your Vault server is now ready. 
 
 ### Step 4: Present your demo
 
-You are now ready to present your demo. On the MySQL server you can show a list of users like this:
-
+You are ready to present your demo.
 ```
+# Nothing up my sleeves - note there are no dynamic users yet.
+sudo mysql -uroot -pbananas -e 'select user,password from mysql.user;'
+
+# Generate some credentials on your local machine
+vault read database/creds/my-role
+
+# Show the list of users on the MySQL server again
+sudo mysql -uroot -pbananas -e 'select user,password from mysql.user;'
+
+# Revoke the lease that was associated with those credentials. Replace with your lease id:
+vault lease revoke database/creds/my-role/bb52414e-fd9c-dbf5-61ad-d9718c8b2b81
+
+# And the dynamic credentials are gone
 sudo mysql -uroot -pbananas -e 'select user,password from mysql.user;'
 ```
 
-Now you can demonstrate creation of a user, then revoking the lease and showing the user disappear from the MySQL server. You can stop here or proceed further for a more advanced demo.
+You can stop here or proceed further for a more advanced demo.
 
 ## Advanced Demo - A Vault Enabled App and Database
 

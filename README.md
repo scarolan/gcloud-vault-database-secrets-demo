@@ -174,6 +174,7 @@ vault read database/creds/my-role
 sudo mysql -uroot -pbananas -e 'select user,password from mysql.user;'
 # Revoke everything under my-role
 vault lease revoke -prefix database/creds/my-role
+```
 
 #### Enable audit logs
 If you want to show off Vault audit logs just run this command:

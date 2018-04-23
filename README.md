@@ -46,7 +46,7 @@ Leave Vault running in this terminal.
 
 ### Step 3: Configure the Vault database backend for MySQL
 
-Open another terminal and run these:
+Open another terminal and run these. You can copy and paste all of this code in one block:
 
 ```
 export VAULT_ADDR=http://127.0.0.1:8200

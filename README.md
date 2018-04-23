@@ -32,7 +32,7 @@ Now on the gcloud instance you just ssh'd into, run this:
 ./install_mysql_ubuntu.sh
 ```
 
-The MySQL server is now ready, and port 3306 is forwarded back to your machine.  
+The MySQL server is now ready, and port 3306 is forwarded back to your machine. Do not proceed to the next steps until the script has completely finished running.
 
 ### Step 2: Configure Vault on your local machine
 

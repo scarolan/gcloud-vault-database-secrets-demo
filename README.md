@@ -10,6 +10,7 @@ This tutorial shows you how to build a simple MySQL Vault database secrets engin
 First run these commands to stand up an Ubuntu 16.04 instance and get connected to it.  The first command creates a new instance, the second command copies our setup script, and the third one forms an SSH tunnel to port 3306 on the remote machine (in addition to getting us connected).
 
 ### Step 1: Configure a MySQL instance
+Open a terminal window and run the following commands:
 
 ```
 gcloud compute instances create mysqlvaultdemo \
@@ -35,8 +36,7 @@ Now on the gcloud instance you just ssh'd into, run this:
 The MySQL server is now ready, and port 3306 is forwarded back to your machine. Do not proceed to the next steps until the script has completely finished running.
 
 ### Step 2: Configure Vault on your local machine
-
-Run the following commands to get Vault setup on your laptop:
+In a new terminal, run the following commands to get Vault setup on your laptop:
 
 ```
 vault server -dev -dev-root-token-id=password
@@ -45,8 +45,7 @@ vault server -dev -dev-root-token-id=password
 Leave Vault running in this terminal. You can point out API actions as they are logged, such as revoked leases, etc.
 
 ### Step 3: Configure the Vault database backend for MySQL
-
-Open another terminal and run these. You can copy and paste all of this code in one block:
+Open a third terminal and run these commands.  You can copy and paste all of this code in one block:
 
 ```
 export VAULT_ADDR=http://127.0.0.1:8200

@@ -169,6 +169,8 @@ vault read database/creds/my-role
 sudo mysql -uroot -pbananas -e 'select user,password from mysql.user;'
 # Revoke everything under my-role
 vault lease revoke -prefix database/creds/my-role
+# Back on the DB server, Voila! users are gone
+sudo mysql -uroot -pbananas -e 'select user,password from mysql.user;'
 ```
 
 #### Enable audit logs

@@ -106,33 +106,7 @@ curl -H "X-Vault-Token: $APP_TOKEN" \
      -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq .
 ```
 
-### Step 4: Show renewal of a token using renew-self
-```
-curl -H "X-Vault-Token: $APP_TOKEN" \
-     -X POST http://127.0.0.1:8200/v1/auth/token/renew-self | jq
-```
-
-### Step 5: Show a list of all leases
-You can do this in the UI or with this command:
-```
-vault list /sys/leases/lookup/database/creds/my-role/
-```
-
-Export the lease id that you are using into a variable. You'll use this in the next step.
-```
-export MY_LEASE=a8174038-a3e5-7495-170f-6ab92ece4c22
-```
-
-### Step 6: Show a renewal of a lease associated with credentials
-The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.
-```
-curl -H "X-Vault-Token: $APP_TOKEN" \
-     -X POST \
-     --data '{ "lease_id": "database/creds/my-role/$MY_LEASE", "increment": 3600}' \
-     http://127.0.0.1:8200/v1/sys/leases/renew | jq .
-```
-
-### Step 7: Log on to MySQL using the dynamic credentials
+### Step 4: Log on to MySQL using the dynamic credentials
 For this bit you'll need a MySQL client installed on your laptop.  The setup script loads a sample database called employees that you can browse. You will be mimicing the behavior of an application interacting with Vault and a MySQL database.
 
 ```
@@ -148,12 +122,12 @@ select emp_no, first_name, last_name, gender from employees limit 10;
 exit
 ```
 
-### Step 8: Revoke the lease
+### Step 5: Revoke the lease
 ```
 vault lease revoke database/creds/my-role/$MY_LEASE
 ```
 
-### Step 9: Attempt to log on again
+### Step 6: Attempt to log on again
 ```
 mysql -uv-token-my-role-vz90z2r03tpx4tq5 -pA1a-z2s3r4wzz568y2uw -h 127.0.0.1
 
@@ -161,6 +135,32 @@ ERROR 1045 (28000): Access denied for user 'v-token-my-role-vz90z2r03tpx4tq5'@'l
 ```
 
 ### Optional Stuff
+
+#### Show renewal of a token using renew-self
+```
+curl -H "X-Vault-Token: $APP_TOKEN" \
+     -X POST http://127.0.0.1:8200/v1/auth/token/renew-self | jq
+```
+
+#### Show a list of all leases
+You can do this in the UI or with this command:
+```
+vault list /sys/leases/lookup/database/creds/my-role/
+```
+
+Export the lease id that you are using into a variable. You'll use this in the next step.
+```
+export MY_LEASE=a8174038-a3e5-7495-170f-6ab92ece4c22
+```
+
+#### Show a renewal of a lease associated with credentials
+The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.
+```
+curl -H "X-Vault-Token: $APP_TOKEN" \
+     -X POST \
+     --data '{ "lease_id": "database/creds/my-role/$MY_LEASE", "increment": 3600}' \
+     http://127.0.0.1:8200/v1/sys/leases/renew | jq .
+```
 
 #### Enable audit logs
 If you want to show off Vault audit logs just run this command:

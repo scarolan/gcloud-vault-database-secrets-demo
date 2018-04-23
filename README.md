@@ -79,6 +79,11 @@ sudo mysql -uroot -pbananas -e 'select user,password from mysql.user;'
 Now you can demonstrate creation of a user, then revoking the lease and showing the user disappear from the MySQL server.
 
 ### Optional Extras
+
+#### Show off the Vault UI
+Log onto http://localhost:8200 in a web browser. Use `password` as the token to log on (you set this above in Step 2).
+
+
 #### Log on using the dynamic credentials
 For this bit you'll need a mysql client installed on your laptop.  The setup script loads a sample database called employees that you can browse.
 
@@ -109,7 +114,7 @@ ERROR 1045 (28000): Access denied for user 'v-token-my-role-vz90z2r03tpx4tq5'@'l
 ```
 
 #### Use a periodic token to fetch credentials
-Create a policy like this:
+Create a policy called `db_read_only` with the following contents:
 ```
 # Allow read only access to employees database
 path "database/creds/my-role" {

@@ -152,17 +152,12 @@ You can do this in the UI or with this command:
 vault list /sys/leases/lookup/database/creds/my-role/
 ```
 
-Export the lease id that you are using into a variable. You'll use this in the next step.
-```
-export MY_LEASE=a8174038-a3e5-7495-170f-6ab92ece4c22
-```
-
 #### Show a renewal of a lease associated with credentials
-The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.
+The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.  Replace with your own lease_id.
 ```
 curl -H "X-Vault-Token: $APP_TOKEN" \
      -X POST \
-     --data '{ "lease_id": "database/creds/my-role/$MY_LEASE", "increment": 3600}' \
+     --data '{ "lease_id": "database/creds/my-role/1dafdffe-028a-9455-0bde-b6bf1df5e207", "increment": 3600}' \
      http://127.0.0.1:8200/v1/sys/leases/renew | jq .
 ```
 

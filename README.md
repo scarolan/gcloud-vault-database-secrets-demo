@@ -115,18 +115,16 @@ curl -H "X-Vault-Token: password" \
      -X GET \
      http://127.0.0.1:8200/v1/database/creds/my-role | jq
 
-# Use the creds to log on
+# Use the creds to log on. This is your app connecting to the remote database.
 mysql -uv-token-my-role-vz90z2r03tpx4tq5 -pA1a-z2s3r4wzz568y2uw -h 127.0.0.1
 
-# Open a SQL prompt
-sudo mysql -uroot -pbananas
-
-# In the SQL prompt run these commands:
+# In the SQL prompt run these commands. Your app has read-only access to this database:
 use employees;
 desc employees;
 select emp_no, first_name, last_name, gender from employees limit 10;
 
-# Log off the machine, revoke the lease.  Attempt to log on again:
+# Log off the database server, then revoke the lease.  Attempt to log on again:
+exit
 vault lease revoke database/creds/my-role/4f876169-ae19-c69c-34ca-a4ee9e6798d6
 mysql -uv-token-my-role-vz90z2r03tpx4tq5 -pA1a-z2s3r4wzz568y2uw -h 127.0.0.1
 

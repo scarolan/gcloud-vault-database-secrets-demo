@@ -95,21 +95,21 @@ path "database/creds/my-role" {
 ```
 
 ### Step 3: Generate a periodic token for your 'app'
-Generate a token for your 'app' server.  Export it into a variable for ease of use. Replace with *your* token.
+Generate a token for your 'app' server.  Export it into a variable for ease of use. Replace with *your* token. 
 ```
 vault token create -period 1h -policy db_read_only
-export VAULT_TOKEN=47b422f4-ddeb-671a-756a-c161b66a84dd
+export APP_TOKEN=47b422f4-ddeb-671a-756a-c161b66a84dd
 ```
 
 Now you can fetch credentials with it:
 ```
-curl -H "X-Vault-Token: $VAULT_TOKEN" \
+curl -H "X-Vault-Token: $APP_TOKEN" \
      -X GET http://127.0.0.1:8200/v1/database/creds/my-role | jq .
 ```
 
 ### Step 4: Show renewal of a token using renew-self
 ```
-curl -H "X-Vault-Token: $VAULT_TOKEN" \
+curl -H "X-Vault-Token: $APP_TOKEN" \
      -X POST http://127.0.0.1:8200/v1/auth/token/renew-self | jq
 ```
 
@@ -127,7 +127,7 @@ export MY_LEASE=a8174038-a3e5-7495-170f-6ab92ece4c22
 ### Step 6: Show a renewal of a lease associated with credentials
 The increment is measured in seconds. Try setting it to 86400 and see what happens when you attempt to exceed the max_ttl.
 ```
-curl -H "X-Vault-Token: $VAULT_TOKEN" \
+curl -H "X-Vault-Token: $APP_TOKEN" \
      -X POST \
      --data '{ "lease_id": "database/creds/my-role/$MY_LEASE", "increment": 3600}' \
      http://127.0.0.1:8200/v1/sys/leases/renew | jq .
